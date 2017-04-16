@@ -2,7 +2,11 @@
 
 module.exports = class Cell {
 	constructor(text, width, vertSeparator) {
-		this._text = text || '';
+		if (typeof text === 'number') {
+			this._text = text.toString();
+		} else {
+			this._text = text || '';
+		}
 		this._width = width || text.length;
 		this._vertSeparator = vertSeparator || '|';
 
