@@ -17,11 +17,11 @@ function init() {
 }
 
 function getTargetPath(args) {
-	return getLastElIndex(args)[0];
+	return args[getLastElIndex(args)];
 }
 
 function getLastElIndex(arr) {
-	return arr.length;
+	return arr.length - 1;
 }
 
 function getRange(arr, from, to) {
@@ -33,11 +33,10 @@ function getExts(args, extFlagIndex, dirFlagIndex) {
 		if (extFlagIndex < dirFlagIndex) {
 			return getRange(args, extFlagIndex + 1, dirFlagIndex);
 		} else {
-			return getRange(args, extFlagIndex + 1, getLastElIndex(args) - 1);
+			return getRange(args, extFlagIndex + 1, getLastElIndex(args));
 		}
 	} else {
-		console.log('only exts');
-		return getRange(args, extFlagIndex + 1, getLastElIndex(args) - 1);
+		return getRange(args, extFlagIndex + 1, getLastElIndex(args));
 	}
 }
 
@@ -46,11 +45,10 @@ function getDirs(args, extFlagIndex, dirFlagIndex) {
 		if (extFlagIndex > dirFlagIndex) {
 			return getRange(args, dirFlagIndex + 1, extFlagIndex);
 		} else {
-			return getRange(args, dirFlagIndex + 1, getLastElIndex(args) - 1);
+			return getRange(args, dirFlagIndex + 1, getLastElIndex(args));
 		}	
 	} else {
-		console.log('only dirs');
-		return getRange(args, dirFlagIndex + 1, getLastElIndex(args) - 1);		
+		return getRange(args, dirFlagIndex + 1, getLastElIndex(args));		
 	}
 }
 
@@ -91,35 +89,87 @@ function processInput(args, cb) {
 	
 	if (helpFlagIndex == 2) {
 		printHelp(cb);
+	} else if (!validateFlags(args)) {
+		printError(cb);
 	}
 }
 
-function getConsoleArgs(args) {
+function printError(cb) {
+	let errorMessage = 'alc: invalid flags'; 
+	cb(errorMessage);
+	process.exit(1) // TODO: make process handling outside this module.
+}
+
+function validateFlags(args) {
+	const arrOfArgs = args;
+
+	let isValid = false;
+
+	arrOfArgs.forEach((element, index) => {
+		if (element.startsWith('-') && index != getLastElIndex(arrOfArgs)) {
+			for (let key in cliFlags) {
+				if (cliFlags[key].flag == element) {
+					isValid = true;
+				} 
+			}
+		}
+	});
+
+	return isValid;
+}
+
+function checkMissingArguments(extFlagIndex, dirFlagIndex, lastIndex, cb) {
+	if (Math.abs(extFlagIndex - dirFlagIndex) == 1
+		|| Math.abs(lastIndex - extFlagIndex) == 1
+		|| Math.abs(lastIndex - dirFlagIndex) == 1) {
+
+		cb('alc: missing arguments');
+		process.exit(1); // TODO: make process handling outside this module.
+	}
+}
+
+function getConsoleArgs(args, cb) {
 	let extFlagIndex = args.indexOf(cliFlags.ignoreExt.flag);
 	let dirFlagIndex = args.indexOf(cliFlags.ignoreDir.flag);
+	let targetPath = getTargetPath(args);
+
+	checkMissingArguments(extFlagIndex, dirFlagIndex, getLastElIndex(args), cb);
 
 	if (extFlagIndex != -1 && dirFlagIndex != -1) {
 		return {
 			ingoredExts: getExts(args, extFlagIndex, dirFlagIndex),
-			ignoredDirs: getDirs(args, extFlagIndex, dirFlagIndex)
+			ignoredDirs: getDirs(args, extFlagIndex, dirFlagIndex),
+			targetPath: targetPath
 		};
 	}
 
 	else if (dirFlagIndex == -1 && extFlagIndex != -1) {
 		return {
-			ingoredExts: getExts(args, extFlagIndex)
+			ingoredExts: getExts(args, extFlagIndex),
+			targetPath: targetPath
 		};
 	} 
 
 	else if (extFlagIndex == -1 && dirFlagIndex != -1) {
 		return {
-			ignoredDirs: getDirs(args, undefined, dirFlagIndex)
+			ignoredDirs: getDirs(args, undefined, dirFlagIndex),
+			targetPath: targetPath
+		};
+	}
+
+	else if (extFlagIndex == -1 && dirFlagIndex == -1 && targetPath) {
+		return {
+			targetPath: targetPath
 		};
 	}
 
 	else {
-		console.log('alc: missing operand\n'
+		cb('alc: missing operand\n'
 			+ 'Try alc ' + cliFlags.help.flag);
+
+		return {
+			error: 1
+		};
 	}
 }
 
@@ -147,8 +197,5 @@ function printResult(resultObj, cb) {
 module.exports = {
 	processInput: processInput,
 	printResult: printResult,
-	getConsoleArgs: getConsoleArgs
+	getConsoleArgs: getConsoleArgs,
 };
-
-//TODO:
-//- add error in input handling
