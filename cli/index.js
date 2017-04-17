@@ -175,6 +175,7 @@ function getConsoleArgs(args, cb) {
 
 function printHelp(cb) {
 	cb(getHelpMessage());
+	process.exit(0); // TODO: make process handling outside this module.
 }
 
 function printResult(resultObj, cb) {
