@@ -98,12 +98,7 @@ function getConsoleArgs(args) {
 	let extFlagIndex = args.indexOf(cliFlags.ignoreExt.flag);
 	let dirFlagIndex = args.indexOf(cliFlags.ignoreDir.flag);
 
-	if (args.length <= 2) {
-		console.log("alc" + ': missing operand\n'
-			+ 'Try alc ' + ' ' + cliFlags.help.flag);
-	}
-
-	else if (extFlagIndex != -1 && dirFlagIndex != -1) {
+	if (extFlagIndex != -1 && dirFlagIndex != -1) {
 		return {
 			ingoredExts: getExts(args, extFlagIndex, dirFlagIndex),
 			ignoredDirs: getDirs(args, extFlagIndex, dirFlagIndex)
@@ -114,10 +109,17 @@ function getConsoleArgs(args) {
 		return {
 			ingoredExts: getExts(args, extFlagIndex)
 		};
-	} else if (extFlagIndex == -1 && dirFlagIndex != -1) {
+	} 
+
+	else if (extFlagIndex == -1 && dirFlagIndex != -1) {
 		return {
 			ignoredDirs: getDirs(args, undefined, dirFlagIndex)
 		};
+	}
+
+	else {
+		console.log('alc: missing operand\n'
+			+ 'Try alc ' + cliFlags.help.flag);
 	}
 }
 
@@ -147,3 +149,6 @@ module.exports = {
 	printResult: printResult,
 	getConsoleArgs: getConsoleArgs
 };
+
+//TODO:
+//- add error in input handling
