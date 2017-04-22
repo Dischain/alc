@@ -4,7 +4,6 @@ const cli = require('./lib/cli');
 const isFileSync = require('./lib/util').isFileSync;
 
 const countLinesRecursively = require('./lib/counter').countLinesRecursively;
-const countLines = require('./lib/counter').countLines;
 const countAtSingleFile = require('./lib/counter').countAtSingleFile;
 
 cli.processInput(process.argv, console.log);
@@ -20,6 +19,7 @@ if (targetPath && !args.error) {
     } else {
         countLinesRecursively(targetPath, args).then((result) => {
             cli.printResult(result, console.log);
+            process.exit(0);
         });
     }
 
