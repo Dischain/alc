@@ -1,6 +1,6 @@
 # alc
 
-[alc](https://github.com/Dischain/alc) is asynchronous recursive line counter on [Node.js](https://nodejs.org).
+[alc](https://github.com/Dischain/alc) is an asynchronous recursive line counter on [Node.js](https://nodejs.org), based on chain of JavaScript ```Promises```.
 
 
 ## Quick start
