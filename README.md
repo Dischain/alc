@@ -43,6 +43,26 @@ total directories: 7
 
 In this example we specified a flag ```-d``` option, which should exclude all the directories with specified name (```.git```). And the last argument is the path to folder to be processed.
 
+Or you can print something like this:
+
+```alc -d .git -e md json ./```
+
+and should get the output like this:
+
+```
+-----------------------
+|extension|files|lines|
+-----------------------
+|js       |10   |753  |
+-----------------------
+
+total lines:       753
+total files:       10
+total directories: 7
+```
+
+There we specified ```-e```option, wich should eclude all the files with specified etensions (```md``` and ```json```)
+
 ### Options
 
 ```-d [DIRECTORY NAME]...``` - excludes the specified directories from counting. Example:
