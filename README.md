@@ -2,6 +2,7 @@
 
 [alc](https://github.com/Dischain/alc) is asynchronous recursive line counter on [Node.js](https://nodejs.org).
 
+
 ## Quick start
 
 ### Installing
@@ -21,7 +22,7 @@ So if you print something like
 alc -d .git ./
 ```
 
-in this project directorie, you should see the output in your console:
+in this project directory, you should see the output in your console:
 
 ```
 -----------------------
@@ -39,3 +40,24 @@ total files:       13
 total directories: 7
 
 ```
+
+In this example we specified a flag ```-d``` option, which should exclude all the directories with specified name (```.git```). And the last argument is the path to folder to be processed.
+
+### Options
+
+```-d [DIRECTORY NAME]...``` - excludes the specified directories from counting. Example:
+
+```alc -d node_modules .git ./```
+
+
+```-e [EXTENSION NAME]...``` - excludes the files with specified extension from counting. Example:
+
+```alc -e sh md ./```
+
+
+```alc --help``` - should print short help information.
+
+
+## Dependencies
+
+The only dependencie this project contains is [yet-another-ascii-table](https://github.com/Dischain/yet-another-ascii-table) for printing a simple ASCII-tables with results.
